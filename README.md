@@ -1,4 +1,6 @@
 # Bryan_Tineo_AllNetflixChallenges
+<img src="https://i.imgur.com/1GKZ9G4.jpeg" alt="Netflix" width="100%" height="300">
+
 
 Welcome to Bryan_Tineo_AllNetflixChallenges! This repository contains projects that I completed during my time at Netflix Bootcamp. In these projects, I worked on REST APIs using Spring, Docker, DBeaver, Insomnia, and other tools and technologies.
 
