@@ -9,6 +9,12 @@ My team and I developed a RESTful API using Java and the Spring framework. The A
 https://user-images.githubusercontent.com/69496341/218230856-a8b34ec9-0136-4766-a5db-8b6ef7763c48.mp4
 
 ## Summative Project 2
+For our Summative Project 2, my team and I built a RESTful API that utilizes the GraphiQL interface. We were provided with the respective schemas and data, and in our code, we wired everything to these schemas and tables that were made by the SQL provided. The tables included in the project were Author, Publisher, and Book, and we created their respective repositories and controllers.
+
+The project involved the use of a database, and we ensured that all controllers and repositories interacted seamlessly with it. Our API includes endpoints for adding, updating, deleting, getting by ID, and getting all data for all the controllers. However, we implemented a find all books by author ID using a GET request in the Books controller. We ensured that all controllers and repositories were thoroughly tested using JUnit 4 and MockMVC.
+
+Through this project, we were able to learn and implement various technologies such as RESTful APIs, Spring Boot, JUnit 4, and MockMVC. The project was an exciting opportunity to apply our skills in building an efficient and effective API that interacts with a database, and we are proud of the outcome.
+
 
 https://user-images.githubusercontent.com/69496341/223601200-aa71c3b1-a8e2-4fc3-b30f-8168a8c0a070.mp4
 
