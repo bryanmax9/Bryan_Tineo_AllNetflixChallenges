@@ -1,23 +1,31 @@
+#We haven't  done retrieve Author with the books objects. Therefore, we found this source that guided us to the implementation:
+#https://www.youtube.com/watch?v=UBGzsb2UkeY
+#https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design
+#https://graphql.org/learn/
+
+# for the object Book we made it nullable 😅
+#so this  will display null of the Author does not have any book related to it
 type Author {
   id: Int!
-  firstName:String!
-  lastName:String!
-  street:String!
-  city:String!
-  state:String!
-  postalCode:String!
-  phone:String!
-  email:String!
-  bookId:Int!
+  firstName: String!
+  lastName: String!
+  street: String!
+  city: String!
+  state: String!
+  postalCode: String!
+  phone: String!
+  email: String!
+  books: [Book!]
 }
 
+#We did nullable for Author and publisher if for some reason the book dosen't have a publisher and  author
 type Book {
   id: Int!
   isbn: String!
   publishDate: String!
-  authorId: Int!
+  author: Author
   title: String!
-  publisherId: Int!
+  publisher: Publisher
   price: Int!
 }
 
@@ -30,10 +38,93 @@ type Publisher {
   postalCode: String!
   phone: String!
   email: String!
+  books: [Book!]
 }
 
 type Query {
-  findAuthorById(id: String): Author
-  findBookById(id: String): Book
-  findPublisherById(id: String): Publisher
+  findAuthorById(id: Int!): Author
+  findBookById(id: Int!): Book
+  findPublisherById(id: Int!): Publisher
 }
+
+schema {
+  query: Query
+}
+
+
+#Test is with the following:
+
+#PUBLISHER
+
+#query {
+#  findPublisherById(id: 1) {
+#    id
+#    name
+#    street
+#    city
+#    state
+#    postalCode
+#    phone
+#    email
+#    books {
+#      id
+#      title
+#      publishDate
+#      author {
+#        id
+#        firstName
+#        lastName
+#      }
+#    }
+#  }
+#}
+
+
+# AUTHOR
+
+#query {
+#  findAuthorById(id: 1) {
+#    id
+#    firstName
+#    lastName
+#    street
+#    city
+#    state
+#    postalCode
+#    phone
+#    email
+#    books {
+#      id
+#      title
+#      publishDate
+#      publisher {
+#        id
+#        name
+#      }
+#    }
+#  }
+#}
+
+#BOOK
+
+#query {
+#  findBookById(id: 1) {
+#    id
+#    isbn
+#    publishDate
+#    author {
+#      id
+#      firstName
+#      lastName
+#    }
+#    title
+#    publisher {
+#      id
+#      name
+#    }
+#    price
+#  }
+#}
+
+
+
