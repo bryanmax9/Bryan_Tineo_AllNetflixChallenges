@@ -17,14 +17,14 @@ public class BookController {
     @Autowired
     BookRepository bookRepository;
 
-    //Use this example for creating or everything:
+//    Use this example for creating or everything:
 //    {
 //        "isbn": "1234567890",
 //        "publishDate": "2022-01-01",
 //        "authorId": 1,
 //        "title": "The Book Title",
 //        "publisherId": 1,
-//        "price": 10
+//        "price": 10,
 //    }
 
 

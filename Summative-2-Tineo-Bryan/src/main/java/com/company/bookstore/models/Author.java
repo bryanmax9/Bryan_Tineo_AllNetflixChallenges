@@ -1,8 +1,10 @@
 package com.company.bookstore.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -38,12 +40,17 @@ public class Author {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "book_id")
-    private int bookId;
+    //My mentor provided me help and a source that explains the OneToMany Relationship:
+//    https://tenmilesquare.com/resources/software-development/spring-boot-jpa-relationship-quick-guide/
+    @OneToMany(mappedBy = "author")
+    //For Json ignore, this is the source: https://fasterxml.github.io/jackson-annotations/javadoc/2.11/com/fasterxml/jackson/annotation/JsonIgnore.html
+    @JsonIgnore // add this annotation to prevent infinite recursion during serialization
+    private List<Book> books;
+
 
     public Author(){}
 
-    public Author(int id, String firstName, String lastName, String street, String city, String state, String postalCode, String phone, String email, int bookId) {
+    public Author(int id, String firstName, String lastName, String street, String city, String state, String postalCode, String phone, String email, List<Book> books) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -53,7 +60,7 @@ public class Author {
         this.postalCode = postalCode;
         this.phone = phone;
         this.email = email;
-        this.bookId = bookId;
+        this.books = books;
     }
 
     public int getId() {
@@ -128,12 +135,13 @@ public class Author {
         this.email = email;
     }
 
-    public int getBookId() {
-        return bookId;
+
+    public List<Book> getBooks() {
+        return books;
     }
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override
@@ -141,12 +149,12 @@ public class Author {
         if (this == o) return true;
         if (!(o instanceof Author)) return false;
         Author author = (Author) o;
-        return getId() == author.getId() && getBookId() == author.getBookId() && Objects.equals(getFirstName(), author.getFirstName()) && Objects.equals(getLastName(), author.getLastName()) && Objects.equals(getStreet(), author.getStreet()) && Objects.equals(getCity(), author.getCity()) && Objects.equals(getState(), author.getState()) && Objects.equals(getPostalCode(), author.getPostalCode()) && Objects.equals(getPhone(), author.getPhone()) && Objects.equals(getEmail(), author.getEmail());
+        return getId() == author.getId() && Objects.equals(getFirstName(), author.getFirstName()) && Objects.equals(getLastName(), author.getLastName()) && Objects.equals(getStreet(), author.getStreet()) && Objects.equals(getCity(), author.getCity()) && Objects.equals(getState(), author.getState()) && Objects.equals(getPostalCode(), author.getPostalCode()) && Objects.equals(getPhone(), author.getPhone()) && Objects.equals(getEmail(), author.getEmail()) && Objects.equals(getBooks(), author.getBooks());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName(), getStreet(), getCity(), getState(), getPostalCode(), getPhone(), getEmail(), getBookId());
+        return Objects.hash(getId(), getFirstName(), getLastName(), getStreet(), getCity(), getState(), getPostalCode(), getPhone(), getEmail(), getBooks());
     }
 
     @Override
@@ -161,7 +169,7 @@ public class Author {
                 ", postalCode='" + postalCode + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", bookId=" + bookId +
+                ", books=" + books +
                 '}';
     }
 }
