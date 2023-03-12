@@ -1,11 +1,15 @@
 package com.company.bookstore.controller;
 
 import com.company.bookstore.models.Author;
+import com.company.bookstore.models.Book;
+import com.company.bookstore.models.Publisher;
 import com.company.bookstore.repository.AuthorRepository;
+import com.company.bookstore.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +17,8 @@ import java.util.Optional;
 public class AuthorController {
 
 
+    @Autowired
+    BookRepository bookRepository;
 
 
     @Autowired
@@ -29,18 +35,28 @@ public class AuthorController {
 //            "state": "CA",
 //            "postalCode": "12345",
 //            "phone": "555-123-4567",
-//            "email": "johndoe@example.com",
-//            "bookId": "0"
+//            "email": "johndoe@example.com"
 //
 //    }
 
 
-
     //Create a new author record.
-    @PostMapping("/authors")
+    @PostMapping("/authors/{bookId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Author addAuthor (@RequestBody Author author){
-        return  authorRepository.save(author);
+    public Author addAuthor(@RequestBody Author author,@PathVariable int bookId){
+        // fetch the book object from the book table
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book.isPresent()){
+            // create a list of books
+            List<Book> books = new ArrayList<>();
+            books.add(book.get());
+
+            author.setBooks(books);
+            return  authorRepository.save(author);
+        } else {
+            throw new RuntimeException();
+        }
+
     }
 
     //Update an existing customer record.

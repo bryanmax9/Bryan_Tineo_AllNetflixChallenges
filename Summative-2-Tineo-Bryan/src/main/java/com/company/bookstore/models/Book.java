@@ -25,10 +25,10 @@ public class Book {
     @Column(name = "publish_date")
     private String publishDate;
 
-    //My mento provided me help and a source that explains the OneToMany Relationship:
+    //My mento provided me help and author source that explains the OneToMany Relationship:
 //    https://tenmilesquare.com/resources/software-development/spring-boot-jpa-relationship-quick-guide/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", referencedColumnName = "author_id", insertable = false, updatable = false)
+    @JoinColumn(name = "author_id", insertable = true, updatable = true, nullable = false)
     @JsonIgnore // add this annotation to prevent infinite recursion during serialization
     private Author author;
 
@@ -36,7 +36,7 @@ public class Book {
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id", referencedColumnName = "publisher_id", insertable = false, updatable = false)
+    @JoinColumn(name = "publisher_id", insertable = true, updatable = true, nullable = false)
     //For Json ignore, this is the source: https://fasterxml.github.io/jackson-annotations/javadoc/2.11/com/fasterxml/jackson/annotation/JsonIgnore.html
     @JsonIgnore // add this annotation to prevent infinite recursion during serialization
     private Publisher publisher;
@@ -125,16 +125,5 @@ public class Book {
         return Objects.hash(getId(), getIsbn(), getPublishDate(), getAuthor(), getTitle(), getPublisher(), getPrice());
     }
 
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", isbn='" + isbn + '\'' +
-                ", publishDate='" + publishDate + '\'' +
-                ", author=" + author +
-                ", title='" + title + '\'' +
-                ", publisher=" + publisher +
-                ", price=" + price +
-                '}';
-    }
+
 }

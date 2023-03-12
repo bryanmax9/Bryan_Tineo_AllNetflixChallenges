@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -141,8 +142,12 @@ public class Author {
     }
 
     public void setBooks(List<Book> books) {
-        this.books = books;
+        if (this.books == null) {
+            this.books = new ArrayList<>();
+        }
+        this.books.addAll(books);
     }
+
 
     @Override
     public boolean equals(Object o) {

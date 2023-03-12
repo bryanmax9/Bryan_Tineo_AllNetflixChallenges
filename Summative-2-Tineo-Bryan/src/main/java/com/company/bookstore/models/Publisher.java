@@ -1,9 +1,12 @@
 package com.company.bookstore.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyIniializer","handler"})
@@ -35,6 +38,12 @@ public class Publisher {
 
     @Column(name = "email")
     private String email;
+
+
+    @OneToMany(mappedBy = "publisher")
+    //For Json ignore, this is the source: https://fasterxml.github.io/jackson-annotations/javadoc/2.11/com/fasterxml/jackson/annotation/JsonIgnore.html
+    @JsonIgnore // add this annotation to prevent infinite recursion during serialization
+    private Set<Book> books = new HashSet<Book>( );
 
     public  Publisher(){}
 

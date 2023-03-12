@@ -1,6 +1,5 @@
 package com.company.bookstore.repository;
 
-
 import com.company.bookstore.models.Author;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +26,11 @@ public class AuthorRepositoryTest {
         authorRepository.deleteAll();
     }
 
-
+    //I use transactional to don't get an error of hibernate
+    //source: https://www.baeldung.com/spring-transactional-propagation-isolation
+    @Transactional
     @Test
     public void addGetDeleteAuthor(){
-
         //Creating an author
         Author author = new Author();
         author.setFirstName("Jhon");
@@ -40,26 +41,24 @@ public class AuthorRepositoryTest {
         author.setPostalCode("12345");
         author.setPhone("555-123-4567");
         author.setEmail("johndoe@example.com");
-        author.setBookId(0);
 
         author = authorRepository.save(author);
 
         Optional<Author> author1 = authorRepository.findById(author.getId());
 
-        //Testing Add        assertEquals(author1.get(),author);
+        //Testing Add
+        assertEquals(author1.get(),author);
 
         authorRepository.deleteById(author.getId());
 
         //Testing Get
         author1 = authorRepository.findById(author.getId());
 
-
         //Testing Delete
         assertFalse(author1.isPresent());
-
-
     }
 
+    @Transactional
     @Test
     public void updateAuthor(){
         //Creating an author
@@ -72,7 +71,6 @@ public class AuthorRepositoryTest {
         author.setPostalCode("12345");
         author.setPhone("555-123-4567");
         author.setEmail("johndoe@example.com");
-        author.setBookId(0);
 
         author = authorRepository.save(author);
 
@@ -87,6 +85,7 @@ public class AuthorRepositoryTest {
         assertEquals(author1.get(),author);
     }
 
+    @Transactional
     @Test
     public void getAllAuthors(){
         //Creating an author
@@ -99,7 +98,6 @@ public class AuthorRepositoryTest {
         author.setPostalCode("12345");
         author.setPhone("555-123-4567");
         author.setEmail("johndoe@example.com");
-        author.setBookId(0);
 
         author = authorRepository.save(author);
 
@@ -112,12 +110,10 @@ public class AuthorRepositoryTest {
         author.setPhone("777-999-3333");
         author.setEmail("saldorva@gmail.com");
         author.setCity("Lima");
-        author.setBookId(0);
 
         author = authorRepository.save(author);
 
         List<Author> aList = authorRepository.findAll();
         assertEquals(aList.size(),2);
     }
-
 }

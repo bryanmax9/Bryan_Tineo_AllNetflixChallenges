@@ -17,7 +17,14 @@
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
-<!--		This dependency is needed for Swagger -->
+<!--		This dependency is needed for book repository testing-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!--		This dependency is needed for Swagger -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>

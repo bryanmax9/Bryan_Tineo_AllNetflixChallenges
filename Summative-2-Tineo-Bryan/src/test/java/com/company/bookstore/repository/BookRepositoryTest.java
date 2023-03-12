@@ -5,11 +5,14 @@ import com.company.bookstore.models.Book;
 import com.company.bookstore.models.Publisher;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +21,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class BookRepositoryTest {
+
+
     @Autowired
     BookRepository bookRepository;
     @Autowired
@@ -35,10 +40,10 @@ public class BookRepositoryTest {
 
     }
 
+    @Transactional
     @Test
-    public void addGetDeleteBooks(){
-        //We are creating publisher and author since book has foreign key for both
-        //Creating a Publisher
+    public void addGetDeleteBooks() {
+        // Creating a Publisher
         Publisher publisher = new Publisher();
         publisher.setName("Anthony");
         publisher.setStreet("123 Main");
@@ -50,9 +55,9 @@ public class BookRepositoryTest {
 
         publisher = publisherRepository.save(publisher);
 
-        //Creating an author
+        // Creating an author
         Author author = new Author();
-        author.setFirstName("Jhon");
+        author.setFirstName("John");
         author.setLastName("Doe");
         author.setStreet("123 Main St");
         author.setCity("Anytown");
@@ -63,101 +68,86 @@ public class BookRepositoryTest {
 
         author = authorRepository.save(author);
 
-        //Create Book
+        // Create Book
         Book book = new Book();
         book.setIsbn("1234567890");
         book.setPublishDate("2022-01-01");
-        book.setAuthorId(author.getId());
+        book.setAuthor(author);
         book.setTitle("The book Title");
-        book.setPublisherId(publisher.getId());
+        book.setPublisher(publisher);
         book.setPrice(10);
 
         book = bookRepository.save(book);
-
-        author.setBookId(book.getId());
-
-        authorRepository.save(author);
-
-        Optional<Book> book1  = bookRepository.findById(book.getId());
-
-        //testing ADD
-        assertEquals(book1.get(),book);
-
-        bookRepository.deleteById(book.getId());
-        //testing GET
-        book1 = bookRepository.findById(book.getId());
-
-        //testing DELETE
-        assertFalse(book1.isPresent());
-
-    }
-
-    @Test
-    public void updateBook(){
-        //We are creating publisher and author since book has foreign key for both
-        //Creating a Publisher
-        Publisher publisher = new Publisher();
-        publisher.setName("Anthony");
-        publisher.setStreet("123 Main");
-        publisher.setCity("LA");
-        publisher.setState("CA");
-        publisher.setPostalCode("12345");
-        publisher.setPhone("555-555-5555");
-        publisher.setEmail("publi@gmail.com");
-
-        publisher = publisherRepository.save(publisher);
-
-        //Creating an author
-        Author author = new Author();
-        author.setFirstName("Jhon");
-        author.setLastName("Doe");
-        author.setStreet("123 Main St");
-        author.setCity("Anytown");
-        author.setState("CA");
-        author.setPostalCode("12345");
-        author.setPhone("555-123-4567");
-        author.setEmail("johndoe@example.com");
-
-        author = authorRepository.save(author);
-
-        //Create Book
-        Book book = new Book();
-        book.setIsbn("1234567890");
-        book.setPublishDate("2022-01-01");
-        book.setAuthorId(author.getId());
-        book.setTitle("The book Title");
-        book.setPublisherId(publisher.getId());
-        book.setPrice(10);
-
-        book = bookRepository.save(book);
-
-        author.setBookId(book.getId());
-
-        authorRepository.save(author);
 
         Optional<Book> book1 = bookRepository.findById(book.getId());
+        // testing ADD
+        assertEquals(book1.get(), book);
+
+
+        bookRepository.deleteById(book.getId());
+        // testing GET
+        book1 = bookRepository.findById(book.getId());
+
+        // testing DELETE
+        assertFalse(book1.isPresent());
+    }
+
+    @Transactional
+    @Test
+    public void updateBook(){
+        // Creating a Publisher
+        Publisher publisher = new Publisher();
+        publisher.setName("Anthony");
+        publisher.setStreet("123 Main");
+        publisher.setCity("LA");
+        publisher.setState("CA");
+        publisher.setPostalCode("12345");
+        publisher.setPhone("555-555-5555");
+        publisher.setEmail("publi@gmail.com");
+
+        publisher = publisherRepository.save(publisher);
+
+        // Creating an author
+        Author author = new Author();
+        author.setFirstName("John");
+        author.setLastName("Doe");
+        author.setStreet("123 Main St");
+        author.setCity("Anytown");
+        author.setState("CA");
+        author.setPostalCode("12345");
+        author.setPhone("555-123-4567");
+        author.setEmail("johndoe@example.com");
+
+        author = authorRepository.save(author);
+
+        // Create Book
+        Book book = new Book();
+        book.setIsbn("1234567890");
+        book.setPublishDate("2022-01-01");
+        book.setAuthor(author);
+        book.setTitle("The book Title");
+        book.setPublisher(publisher);
+        book.setPrice(10);
+
+        book = bookRepository.save(book);
+
+        //Updating the book
+        book.setTitle("Los tres marineros");
+        book.setPrice(20);
+
+        bookRepository.save(book);
+
+        Optional<Book> book1 = bookRepository.findById(book.getId());
+        //Testing update
         assertEquals(book1.get(),book);
-
     }
 
+    @Transactional
     @Test
-    public void getBooksByAuthorId(){
-        //We are creating publisher and author since book has foreign key for both
-        //Creating a Publisher
-        Publisher publisher = new Publisher();
-        publisher.setName("Anthony");
-        publisher.setStreet("123 Main");
-        publisher.setCity("LA");
-        publisher.setState("CA");
-        publisher.setPostalCode("12345");
-        publisher.setPhone("555-555-5555");
-        publisher.setEmail("publi@gmail.com");
-
-        publisher = publisherRepository.save(publisher);
-
-        //Creating an author
+    public void testFindBooksByAuthor() {
+        // create an author
         Author author = new Author();
-        author.setFirstName("Jhon");
+        author.setFirstName("John");
         author.setLastName("Doe");
         author.setStreet("123 Main St");
         author.setCity("Anytown");
@@ -166,119 +156,48 @@ public class BookRepositoryTest {
         author.setPhone("555-123-4567");
         author.setEmail("johndoe@example.com");
 
-        author = authorRepository.save(author);
-
-        //Create Book
-        Book book = new Book();
-        book.setIsbn("1234567890");
-        book.setPublishDate("2022-01-01");
-        book.setAuthorId(author.getId());
-        book.setTitle("The book Title");
-        book.setPublisherId(publisher.getId());
-        book.setPrice(10);
-
-        book = bookRepository.save(book);
-
-        author.setBookId(book.getId());
-
-        authorRepository.save(author);
 
 
-        //In the list there should be just one book from one author since we only inserted one of each publisher, author, and book
-        List<Book> bList = bookRepository.findByAuthorId(author.getId());
-        //Then we expect just one book with the author we just added
-        assertEquals(bList.size(),1);
-    }
 
-    @Test
-    public void getAllBooks(){
-        //We are creating publisher and author since book has foreign key for both
-        //Creating a Publisher
-        Publisher publisher = new Publisher();
-        publisher.setName("Anthony");
-        publisher.setStreet("123 Main");
-        publisher.setCity("LA");
-        publisher.setState("CA");
-        publisher.setPostalCode("12345");
-        publisher.setPhone("555-555-5555");
-        publisher.setEmail("publi@gmail.com");
+        // create a book object
+        Book book1 = new Book();
+        book1.setTitle("Book 1");
+        book1.setIsbn("1234567890");
+        book1.setPrice(20);
 
-        publisher = publisherRepository.save(publisher);
 
-        //Creating an author
-        Author author = new Author();
-        author.setFirstName("Jhon");
-        author.setLastName("Doe");
-        author.setStreet("123 Main St");
-        author.setCity("Anytown");
-        author.setState("CA");
-        author.setPostalCode("12345");
-        author.setPhone("555-123-4567");
-        author.setEmail("johndoe@example.com");
+
+
+        // create a list of books
+        List<Book> books = new ArrayList<>();
+        books.add(book1);
+
+        author.setBooks(books);
 
         author = authorRepository.save(author);
 
-        //Create Book
-        Book book = new Book();
-        book.setIsbn("1234567890");
-        book.setPublishDate("2022-01-01");
-        book.setAuthorId(author.getId());
-        book.setTitle("The book Title");
-        book.setPublisherId(publisher.getId());
-        book.setPrice(10);
+        book1.setAuthor(author);
 
-        book = bookRepository.save(book);
+        bookRepository.save(book1);
 
-        author.setBookId(book.getId());
 
-        authorRepository.save(author);
 
-        //SECOND PUBLISHER, AUTHOR, and BOOK added to the tables
-        Publisher publisher2 = new Publisher();
-        publisher2.setName("Salvador");
-        publisher2.setStreet("167 Main");
-        publisher2.setCity("HI");
-        publisher2.setState("MA");
-        publisher2.setPostalCode("12345");
-        publisher2.setPhone("555-555-5555");
-        publisher2.setEmail("salva@gmail.com");
+        // call the findByAuthor method and pass in the author object
+        List<Book> booksByAuthor = bookRepository.findByAuthor(author);
 
-        publisher2 = publisherRepository.save(publisher2);
-
-        //Creating an author
-        Author author2 = new Author();
-        author2.setFirstName("Connor");
-        author2.setLastName("Especho");
-        author2.setStreet("999 Main St");
-        author2.setCity("Lima");
-        author2.setState("LI");
-        author2.setPostalCode("12345");
-        author2.setPhone("555-123-4567");
-        author2.setEmail("conn@example.com");
-
-        author2 = authorRepository.save(author2);
-
-        //Create Book
-        Book book2 = new Book();
-        book2.setIsbn("5674839274");
-        book2.setPublishDate("2022-01-01");
-        book2.setAuthorId(author2.getId());
-        book2.setTitle("La Marmota Mala");
-        book2.setPublisherId(publisher2.getId());
-        book2.setPrice(10);
-
-        book2 = bookRepository.save(book2);
-
-        author2.setBookId(book2.getId());
-
-        authorRepository.save(author2);
-
-        List<Book> bList = bookRepository.findAll();
-        assertEquals(bList.size(),2);
+        // assert that the list of books returned by findByAuthor method contains the book objects we saved
+        assertEquals(books, booksByAuthor);
     }
+
+
+
+
+
 
 
 
 
 
 }
+
+

@@ -70,10 +70,9 @@ schema {
 #      id
 #      title
 #      publishDate
-#      author {
+#      publisher {
 #        id
-#        firstName
-#        lastName
+#        name
 #      }
 #    }
 #  }
