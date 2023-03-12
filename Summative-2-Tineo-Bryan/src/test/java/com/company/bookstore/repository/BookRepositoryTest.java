@@ -165,6 +165,18 @@ public class BookRepositoryTest {
         book1.setIsbn("1234567890");
         book1.setPrice(20);
 
+        // Creating a Publisher
+        Publisher publisher = new Publisher();
+        publisher.setName("Anthony");
+        publisher.setStreet("123 Main");
+        publisher.setCity("LA");
+        publisher.setState("CA");
+        publisher.setPostalCode("12345");
+        publisher.setPhone("555-555-5555");
+        publisher.setEmail("publi@gmail.com");
+
+        publisher = publisherRepository.save(publisher);
+
 
 
 
@@ -174,16 +186,22 @@ public class BookRepositoryTest {
 
         author.setBooks(books);
 
-        author = authorRepository.save(author);
+        authorRepository.save(author);
 
+        author = authorRepository.getById(author.getId());
+
+        book1.setPublisher(publisher);
         book1.setAuthor(author);
 
         bookRepository.save(book1);
 
 
 
+
+
+
         // call the findByAuthor method and pass in the author object
-        List<Book> booksByAuthor = bookRepository.findByAuthor(author);
+        List<Book> booksByAuthor = bookRepository.findAllByAuthor(author);
 
         // assert that the list of books returned by findByAuthor method contains the book objects we saved
         assertEquals(books, booksByAuthor);

@@ -5,8 +5,12 @@ import com.company.bookstore.models.Publisher;
 import com.company.bookstore.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +40,11 @@ public class PublisherController {
 
     @PostMapping("/publishers")
     @ResponseStatus(HttpStatus.CREATED)
-    public Publisher addPublisher(@RequestBody Publisher publisher) {
-
-        return publisherRepository.save(publisher);
+    public ResponseEntity<Publisher> addPublisher(@Valid @RequestBody Publisher publisher) {
+        Publisher savedPublisher = publisherRepository.save(publisher);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(savedPublisher.getId()).toUri();
+        return ResponseEntity.created(location).body(savedPublisher);
     }
 
     @PutMapping("/publishers")

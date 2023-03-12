@@ -34,7 +34,6 @@ public class BookController {
 //        "price": 10,
 //    }
 
-    // ctrl + alt + l
     //Create a new book record.
     @PostMapping("/books/{authorId}/{publisherId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -99,7 +98,7 @@ public class BookController {
     @GetMapping("/books/author/{authorId}")
     public List<Book> findBooksByAuthorId(@PathVariable Author authorId) {
 
-        List<Book> librosDelRepositorio = bookRepository.findByAuthor(authorId);
+        List<Book> librosDelRepositorio = bookRepository.findAllByAuthor(authorId);
 
         if (!librosDelRepositorio.isEmpty()) {
             //if there are customers found with the given state
