@@ -1,85 +1,108 @@
-//package com.company.bookstore.controller;
-//
-//
-//import com.company.bookstore.models.Author;
-//import com.company.bookstore.repository.AuthorRepository;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.Test;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.runner.RunWith;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.context.junit4.SpringRunner;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.Assert.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.when;
-//import static org.hamcrest.Matchers.hasSize;
-//import static org.mockito.Mockito.*;
-//import static org.mockito.BDDMockito.given;
-//import static org.hamcrest.Matchers.is;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//
-//@RunWith(SpringRunner.class)
-//@WebMvcTest(AuthorController.class)
-//public class AuthorControllerTest {
-//    @Autowired
-//    private MockMvc mockMvc;
-//    private ObjectMapper mapper = new ObjectMapper();
-//
-//    @MockBean
-//    private AuthorRepository authorRepository;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//    }
-//
-//    @Test
-//    public void addGetDeleteAuthor() throws Exception {
-//        //Creating an author
-//        Author author = new Author();
-//        author.setFirstName("Jhon");
-//        author.setLastName("Doe");
-//        author.setStreet("123 Main St");
-//        author.setCity("Anytown");
-//        author.setState("CA");
-//        author.setPostalCode("12345");
-//        author.setPhone("555-123-4567");
-//        author.setEmail("johndoe@example.com");
-//
-//        when(authorRepository.save(any(Author.class))).thenReturn(author);
-//
-//        mockMvc.perform(post("/authors/{bookId}", 1)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(mapper.writeValueAsString(author)))
-//                .andExpect(status().isCreated());
-//
-//        Optional<Author> author1 = authorRepository.findById(author.getId());
-//        assertTrue(author1.isPresent());
-//        assertEquals(author1.get(), author);
-//
-//        mockMvc.perform(delete("/author/{id}", author.getId()))
-//                .andExpect(status().isNoContent());
-//
-//        author1 = authorRepository.findById(author.getId());
-//        assertFalse(author1.isPresent());
-//    }
-//
-//
-//
-//
-//}
+package com.company.bookstore.controller;
+import com.company.bookstore.models.Author;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(AuthorController.class)
+
+public class AuthorControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    private ObjectMapper mapper = new ObjectMapper();
+
+    private List<Author> authorList;
+
+    @Before
+    public void setUp() {
+
+    }
+
+    @Test
+    public void shouldReturnAllAuthorsInCollection() throws Exception {
+        mockMvc.perform(get("/authors"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnAuthorById() throws Exception {
+        // Initialize an author object with a known ID
+        Author author = new Author();
+        //author.setId(1);
+        author.setFirstName("Rick");
+        author.setLastName("RickRiordan");
+
+        String outputJson = mapper.writeValueAsString(author);
+
+        mockMvc.perform(get("/authors/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(outputJson));
+    }
+
+    @Test
+    public void shouldCreateNewAuthor() throws Exception {
+        Author inputAuthor = new Author();
+        inputAuthor.setFirstName("Edgar");
+        inputAuthor.setLastName("Allan Poe");
+
+        String inputJson = mapper.writeValueAsString(inputAuthor);
+
+        Author outputAuthor = new Author();
+        //outputAuthor.setId(2L);
+        outputAuthor.setFirstName("Edgar");
+        outputAuthor.setFirstName("Allan Poe");
+
+        String outputJson = mapper.writeValueAsString(outputAuthor);
+
+        mockMvc.perform(
+                        post("/authors")
+                                .content(inputJson)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().json(outputJson));
+    }
+
+    @Test
+    public void shouldUpdateAuthorById() throws Exception {
+        Author inputAuthor = new Author();
+        inputAuthor.setFirstName("Rick");
+        inputAuthor.setLastName("Riordan");
+
+        String inputJson = mapper.writeValueAsString(inputAuthor);
+
+        mockMvc.perform(
+                        put("/authors/1")
+                                .content(inputJson)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldDeleteAuthorById() throws Exception {
+        mockMvc.perform(delete("/authors/1"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+}
 
